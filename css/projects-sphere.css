@@ -1,0 +1,104 @@
+/* Selected Projects: 3D sphere section */
+.sphere-section {
+  position: relative; width: 100%; height: 100vh; height: 100svh; min-height: 560px;
+  background: #000; overflow: hidden; margin-top: 60px;
+  --sp-w: 240px; --sp-h: 135px;
+}
+.sphere-title {
+  position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%); z-index: 3;
+  margin: 0; padding: 0 16px; text-align: center; pointer-events: none;
+  font-family: "Newsreader", ui-serif, Georgia, serif !important; font-weight: 300; letter-spacing: -0.01em;
+  font-size: clamp(40px, 7vw, 104px); line-height: 1.05; color: #fff;
+  text-shadow: 0 2px 40px rgba(0, 0, 0, 0.9);
+}
+.sphere-hint {
+  position: absolute; left: 0; right: 0; bottom: 28px; z-index: 3; margin: 0; text-align: center; pointer-events: none;
+  font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: #8a8a88;
+}
+.sphere-section::before { /* soft vignette so the edge cards fall into black */
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.75) 100%);
+}
+
+[data-sphere] { position: absolute; inset: 0; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+[data-sphere].is-dragging { cursor: grabbing; }
+.sp-renderer { position: absolute; inset: 0; overflow: hidden; }
+
+.sp-card {
+  width: var(--sp-w); height: var(--sp-h); outline: none; cursor: pointer; will-change: opacity;
+  -webkit-tap-highlight-color: transparent;
+}
+.sp-face {
+  position: relative; width: 100%; height: 100%; border-radius: 6px; overflow: hidden; background: #111;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  transition: box-shadow 0.4s ease; will-change: transform;
+}
+.sp-face img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.sp-noimg {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 12px;
+  background: linear-gradient(135deg, #1d1a14, #0d0c0a); color: #ededeb;
+  font-family: "Newsreader", ui-serif, Georgia, serif; font-size: calc(var(--sp-w) * 0.09);
+}
+.sp-meta {
+  position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 12px 10px; display: flex; flex-direction: column; gap: 2px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.88), transparent);
+  opacity: 0; transform: translateY(6px); transition: opacity 0.35s ease, transform 0.45s cubic-bezier(.16, 1, .3, 1);
+  pointer-events: none;
+}
+.sp-meta strong { font-size: 13px; font-weight: 600; color: #fff; line-height: 1.2; }
+.sp-meta span { font-size: 11px; color: #dba507; letter-spacing: 0.06em; text-transform: uppercase; }
+.sp-card.is-hover .sp-face { box-shadow: 0 18px 60px rgba(0, 0, 0, 0.85), 0 0 0 1.5px #dba507, 0 0 36px rgba(219, 165, 7, 0.28); }
+.sp-card.is-hover .sp-meta { opacity: 1; transform: none; }
+.sp-card:focus-visible .sp-face { box-shadow: 0 0 0 2px #fff, 0 0 30px rgba(255, 255, 255, 0.3); }
+
+/* Modal */
+.sp-modal { position: fixed; inset: 0; z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+.sp-modal.is-open { display: flex; }
+.sp-modal-bg { position: absolute; inset: 0; background: rgba(4, 4, 5, 0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.sp-modal-card {
+  position: relative; width: min(1000px, 100%); max-height: calc(100vh - 40px); overflow: auto; outline: none;
+  background: #121212; border: 1px solid #2a2a2a; border-radius: 16px; color: #fff;
+  display: grid; grid-template-columns: 1.35fr 1fr; box-shadow: 0 40px 120px rgba(0, 0, 0, 0.8);
+}
+.sp-modal-x {
+  position: absolute; top: 10px; right: 12px; z-index: 2; width: 36px; height: 36px; border-radius: 50%; border: 0; cursor: pointer;
+  background: rgba(0, 0, 0, 0.55); color: #fff; font-size: 24px; line-height: 1;
+}
+.sp-modal-x:hover { background: #dba507; color: #111; }
+.sp-modal-media { background: #000; display: flex; align-items: center; min-height: 240px; }
+.sp-modal-media img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.sp-modal-ph {
+  display: none; width: 100%; height: 100%; min-height: 240px; align-items: center; justify-content: center; text-align: center; padding: 24px;
+  font-family: "Newsreader", ui-serif, Georgia, serif; font-size: 34px; background: linear-gradient(135deg, #1d1a14, #0d0c0a);
+}
+.sp-modal-body { padding: 32px 28px; display: flex; flex-direction: column; }
+.sp-modal-cat { margin: 0 0 6px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #dba507; }
+.sp-modal-title { margin: 0 0 12px; font-size: 28px; line-height: 1.15; font-family: "Poppins", sans-serif; font-weight: 600; }
+.sp-modal-desc { margin: 0 0 22px; font-size: 15px; line-height: 1.6; color: #c9c9c6; }
+.sp-modal-label { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8a88; }
+.sp-modal-tech { list-style: none; margin: 0 0 28px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.sp-modal-tech li { padding: 5px 12px; border-radius: 999px; border: 1px solid #333; background: #1b1b1b; font-size: 12px; color: #ddd; }
+.sp-modal-actions { margin-top: auto; display: flex; flex-wrap: wrap; gap: 10px; }
+.sp-modal-visit, .sp-modal-close {
+  height: 44px; padding: 0 22px; border-radius: 10px; border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Poppins", sans-serif; font-weight: 500; font-size: 14px; text-decoration: none; transition: background 0.2s, transform 0.2s;
+}
+.sp-modal-visit { background: #dba507; color: #111; }
+.sp-modal-visit:hover { background: #f0b90b; color: #111; transform: translateY(-1px); }
+.sp-modal-close { background: #222; color: #fff; border: 1px solid #333; }
+.sp-modal-close:hover { background: #2c2c2c; }
+.sp-modal :focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+html.sp-lock, html.sp-lock body { overflow: hidden; }
+
+@media (max-width: 900px) {
+  .sp-modal-card { grid-template-columns: 1fr; }
+  .sp-modal-body { padding: 22px 20px 24px; }
+  .sp-modal-title { font-size: 22px; }
+}
+@media (max-width: 640px) {
+  .sphere-section { margin-top: 30px; }
+  .sphere-hint { bottom: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sp-face, .sp-meta, .sp-modal-visit { transition: none; }
+}
