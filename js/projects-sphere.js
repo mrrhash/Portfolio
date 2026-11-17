@@ -110,9 +110,8 @@ function init(root) {
   function layout() {
     W = root.clientWidth || window.innerWidth;
     H = root.clientHeight || window.innerHeight;
-    const base = Math.min(W * 0.9, H * 1.15);
-    R = Math.max(base * 0.5, 170);
-    const cw = Math.max(R * 0.46, 150), ch = (cw * 9) / 16;
+    R = Math.max(Math.min(W * 0.45, H * 0.44), 150);          // whole sphere always fits on screen
+    const cw = Math.max(R * 0.46, 130), ch = (cw * 9) / 16;   // small enough that cards never overlap
     // camera distance keeps front cards near 1:1 size at any screen height
     D = R + ((H / 2) / Math.tan(THREE.MathUtils.degToRad(camera.fov / 2))) * 1.05;
     camera.aspect = W / H;
@@ -138,7 +137,7 @@ function init(root) {
 
   /* ---------- rotation state ---------- */
   const ang = { x: 0, y: 0 };          // angular velocity (rad per 60fps frame)
-  const AUTO = { x: 0.0004, y: 0.0016 };
+  const AUTO = { x: 0.0002, y: 0.0006 };
   const qx = new THREE.Quaternion(), qy = new THREE.Quaternion();
   const AX = new THREE.Vector3(1, 0, 0), AY = new THREE.Vector3(0, 1, 0);
   group.quaternion.setFromEuler(new THREE.Euler(0.35, -0.5, 0));
@@ -167,8 +166,8 @@ function init(root) {
     } else if (e.pointerType === 'mouse') {
       // free mouse movement nudges the sphere with inertia
       if (last) {
-        ang.y = clampV(ang.y + (e.clientX - last.x) * 0.0007, 0.05);
-        ang.x = clampV(ang.x + (e.clientY - last.y) * 0.0007, 0.05);
+        ang.y = clampV(ang.y + (e.clientX - last.x) * 0.0003, 0.02);
+        ang.x = clampV(ang.x + (e.clientY - last.y) * 0.0003, 0.02);
       }
       last = { x: e.clientX, y: e.clientY };
       poke();
@@ -289,7 +288,7 @@ function init(root) {
   const wp = new THREE.Vector3(), cam = new THREE.Vector3(), dir = new THREE.Vector3(), tc = new THREE.Vector3();
   const ZERO = new THREE.Vector3(), UP = new THREE.Vector3(0, 1, 0);
   const mat = new THREE.Matrix4(), wq = new THREE.Quaternion(), gInv = new THREE.Quaternion();
-  const LEAN = 0.65;
+  const LEAN = 0.4;
   let visible = false, raf = 0, prev = performance.now();
 
   function frame(now) {
@@ -302,11 +301,11 @@ function init(root) {
       const idle = !dragging && now - lastInput > 1500 && !REDUCED;
       const tx = idle ? AUTO.x : 0, ty = idle ? AUTO.y : 0;
       if (!dragging) {
-        const f = 1 - Math.pow(1 - 0.035, dt);
+        const f = 1 - Math.pow(1 - 0.02, dt);
         ang.x += (tx - ang.x) * f;
         ang.y += (ty - ang.y) * f;
         // slow down while hovering a card
-        speed += ((hoverCount > 0 ? 0.15 : 1) - speed) * (1 - Math.pow(0.9, dt));
+        speed += ((hoverCount > 0 ? 0.08 : 1) - speed) * (1 - Math.pow(0.9, dt));
         rotate(ang.x * dt * speed, ang.y * dt * speed);
       }
     }
