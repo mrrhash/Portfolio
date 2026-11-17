@@ -21,8 +21,7 @@
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:wght@300;400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/projects-sphere.css" />
-  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+  <link rel="stylesheet" href="css/projects-slider.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 </head>
 
@@ -120,10 +119,9 @@
     </div>
   </section>
 
-  <section class="sphere-section" id="work" aria-label="Selected Projects">
-    <h2 class="sphere-title">Selected Projects</h2>
-    <div data-sphere></div>
-    <p class="sphere-hint">Drag to explore</p>
+  <section class="slider-section" id="work" aria-label="Selected Projects">
+    <h2 class="slider-title">Selected Projects</h2>
+    <div data-slider></div>
   </section>
 
   <!--  footer  -->
@@ -201,7 +199,7 @@
       .querySelectorAll(".hidden")
       .forEach((el) => observer.observe(el));
   </script>
-  <script type="module" src="js/projects-sphere.js"></script>
+  <script type="module" src="js/projects-slider.js"></script>
 </body>
 
 </html>

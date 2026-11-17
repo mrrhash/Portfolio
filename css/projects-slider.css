@@ -1,0 +1,106 @@
+/* Selected Projects: simple coverflow slider */
+.slider-section { background: #000; padding: 90px 0 70px; margin-top: 60px; overflow: hidden; --cw: 420px; --ch: 236px; }
+.slider-title {
+  margin: 0 0 40px; padding: 0 16px; text-align: center; color: #fff;
+  font-family: "Newsreader", ui-serif, Georgia, serif !important; font-weight: 300; letter-spacing: -0.01em;
+  font-size: clamp(36px, 5.5vw, 76px); line-height: 1.05;
+}
+
+.ps { position: relative; width: 100%; }
+.ps-viewport {
+  position: relative; width: 100%; height: calc(var(--ch) + 60px); perspective: 1400px; cursor: grab; outline: none;
+  touch-action: pan-y; user-select: none; -webkit-user-select: none;
+  /* soft fade into black at both edges, like the reference */
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 12%, #000 88%, transparent 100%);
+}
+.ps-viewport.is-dragging { cursor: grabbing; }
+.ps-viewport:focus-visible { box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.5); }
+.ps-track { position: absolute; inset: 0; transform-style: preserve-3d; }
+
+.ps-card {
+  position: absolute; left: 50%; top: 50%; width: var(--cw); height: var(--ch); padding: 0; border: 0; border-radius: 8px;
+  overflow: hidden; background: #111; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.07);
+  transition: transform 0.7s cubic-bezier(.16, 1, .3, 1), opacity 0.6s ease, filter 0.6s ease, box-shadow 0.4s ease;
+  will-change: transform, opacity;
+}
+.ps-track.is-instant .ps-card { transition: none; }
+.ps-card img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.ps-card.is-active { box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(219, 165, 7, 0.55); }
+.ps-card.is-active:hover { box-shadow: 0 30px 80px rgba(0, 0, 0, 0.85), 0 0 0 2px #dba507, 0 0 40px rgba(219, 165, 7, 0.25); }
+.ps-card:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+.ps-noimg {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; padding: 16px;
+  background: linear-gradient(135deg, #1d1a14, #0d0c0a); color: #ededeb;
+  font-family: "Newsreader", ui-serif, Georgia, serif; font-size: calc(var(--cw) * 0.07);
+}
+
+.ps-caption { margin-top: 28px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 84px; padding: 0 16px; }
+.ps-cat { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: #dba507; }
+.ps-title { font-family: "Poppins", sans-serif; font-weight: 600; font-size: clamp(20px, 2.4vw, 30px); color: #fff; line-height: 1.2; }
+.ps-hint { font-size: 12px; color: #8a8a88; margin-top: 4px; }
+
+.ps-controls { margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 22px; }
+.ps-btn {
+  width: 48px; height: 48px; border-radius: 50%; border: 1px solid #333; background: #111; color: #fff; font-size: 20px; line-height: 1;
+  cursor: pointer; transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.25s;
+}
+.ps-btn:hover { background: #dba507; border-color: #dba507; color: #111; transform: scale(1.06); }
+.ps-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.ps-count { min-width: 78px; text-align: center; font-size: 14px; letter-spacing: 0.12em; color: #bdbdba; font-variant-numeric: tabular-nums; }
+.ps-bar { width: min(260px, 60%); height: 2px; margin: 22px auto 0; background: #1f1f1f; border-radius: 2px; overflow: hidden; }
+.ps-bar span { display: block; height: 100%; background: #dba507; transition: width 0.6s cubic-bezier(.16, 1, .3, 1); }
+
+/* Modal */
+.ps-modal { position: fixed; inset: 0; z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+.ps-modal.is-open { display: flex; }
+.ps-modal-bg { position: absolute; inset: 0; background: rgba(4, 4, 5, 0.82); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.ps-modal-card {
+  position: relative; width: min(1000px, 100%); max-height: calc(100vh - 40px); overflow: auto; outline: none;
+  background: #121212; border: 1px solid #2a2a2a; border-radius: 16px; color: #fff;
+  display: grid; grid-template-columns: 1.35fr 1fr; box-shadow: 0 40px 120px rgba(0, 0, 0, 0.8);
+}
+.ps-modal-x {
+  position: absolute; top: 10px; right: 12px; z-index: 2; width: 36px; height: 36px; border-radius: 50%; border: 0; cursor: pointer;
+  background: rgba(0, 0, 0, 0.55); color: #fff; font-size: 24px; line-height: 1;
+}
+.ps-modal-x:hover { background: #dba507; color: #111; }
+.ps-modal-media { background: #000; display: flex; align-items: center; min-height: 240px; }
+.ps-modal-media img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.ps-modal-ph {
+  display: none; width: 100%; height: 100%; min-height: 240px; align-items: center; justify-content: center; text-align: center; padding: 24px;
+  font-family: "Newsreader", ui-serif, Georgia, serif; font-size: 34px; background: linear-gradient(135deg, #1d1a14, #0d0c0a);
+}
+.ps-modal-body { padding: 32px 28px; display: flex; flex-direction: column; }
+.ps-modal-cat { margin: 0 0 6px; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: #dba507; }
+.ps-modal-title { margin: 0 0 12px; font-size: 28px; line-height: 1.15; font-family: "Poppins", sans-serif; font-weight: 600; }
+.ps-modal-desc { margin: 0 0 22px; font-size: 15px; line-height: 1.6; color: #c9c9c6; }
+.ps-modal-label { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #8a8a88; }
+.ps-modal-tech { list-style: none; margin: 0 0 28px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.ps-modal-tech li { padding: 5px 12px; border-radius: 999px; border: 1px solid #333; background: #1b1b1b; font-size: 12px; color: #ddd; }
+.ps-modal-actions { margin-top: auto; display: flex; flex-wrap: wrap; gap: 10px; }
+.ps-modal-visit, .ps-modal-close {
+  height: 44px; padding: 0 22px; border-radius: 10px; border: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  font-family: "Poppins", sans-serif; font-weight: 500; font-size: 14px; text-decoration: none; transition: background 0.2s, transform 0.2s;
+}
+.ps-modal-visit { background: #dba507; color: #111; }
+.ps-modal-visit:hover { background: #f0b90b; color: #111; transform: translateY(-1px); }
+.ps-modal-close { background: #222; color: #fff; border: 1px solid #333; }
+.ps-modal-close:hover { background: #2c2c2c; }
+.ps-modal :focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+html.ps-lock, html.ps-lock body { overflow: hidden; }
+
+@media (max-width: 900px) {
+  .ps-modal-card { grid-template-columns: 1fr; }
+  .ps-modal-body { padding: 22px 20px 24px; }
+  .ps-modal-title { font-size: 22px; }
+}
+@media (max-width: 640px) {
+  .slider-section { padding: 60px 0 50px; margin-top: 30px; }
+  .slider-title { margin-bottom: 28px; }
+  .ps-btn { width: 44px; height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ps-card, .ps-bar span, .ps-btn, .ps-modal-visit { transition: none; }
+}
